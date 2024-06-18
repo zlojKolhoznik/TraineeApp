@@ -26,7 +26,8 @@
         </ToolBarPanel>
         <Canvas Grid.Column="1" 
                 Grid.Row="1" 
-                Name="cnMain"/>
+                Name="cnMain"
+                Loaded="cnMain_Loaded"/>
         <TreeView Grid.Column="0" 
                   Grid.Row="1" 
                   Name="tvMain"/>
