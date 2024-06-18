@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TraineeApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="1000"
+        ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -20,9 +21,18 @@
                       Grid.ColumnSpan="2" 
                       Orientation="Horizontal"
                       HorizontalAlignment="Center">
-            <Button Content="Triangle" Click="Triangle_Click"/>
-            <Button Content="Circle" Click="Circle_Click"/>
-            <Button Content="Rectangle" Click="Rectangle_Click"/>
+            <Button Click="Triangle_Click" Style="{StaticResource controlButtonStyle}">
+                <Image Source="Images/triangle.png" Width="30"/>
+            </Button>
+            <Button Click="Circle_Click" Style="{StaticResource controlButtonStyle}">
+                <Image Source="Images/circle.png" Width="30"/>
+            </Button>
+            <Button Click="Rectangle_Click" Style="{StaticResource controlButtonStyle}">
+                <Image Source="Images/rectangle.png" Width="30"/>
+            </Button>
+            <Button Click="Restart_Click" Style="{StaticResource controlButtonStyle}">
+                <Image Source="Images/refresh.png" Width="30"/>
+            </Button>
         </ToolBarPanel>
         <Canvas Grid.Column="1" 
                 Grid.Row="1" 

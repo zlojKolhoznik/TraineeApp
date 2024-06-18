@@ -9,7 +9,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\circle.png" />
+    <None Remove="Images\rectangle.png" />
+    <None Remove="Images\refresh.png" />
+    <None Remove="Images\triangle.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Figures\Figures.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\circle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\rectangle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\refresh.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\triangle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

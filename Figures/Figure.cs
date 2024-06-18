@@ -1,5 +1,4 @@
-
-using System.Drawing;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Figures
@@ -10,14 +9,16 @@ namespace Figures
         protected int _sizeY;           // half-height
         protected Point _coords;
         protected Point _speedVector;
+        protected readonly Color _color;
 
-        public Figure(Point pMax, int width, int height)
+        public Figure(Point pMax, int width, int height, Color color)
         {
             var rnd = new Random();
             _sizeX = width / 2;
             _sizeY = height / 2;
-            _coords = new Point(rnd.Next(pMax.X - _sizeX), rnd.Next(pMax.Y - _sizeY));
+            _coords = new Point(rnd.Next(_sizeX, (int)pMax.X - _sizeX), rnd.Next(_sizeY, (int)pMax.Y - _sizeY));
             _speedVector = new Point(rnd.Next(5, 10), rnd.Next(5, 10));
+            _color = color;
         }
 
         public void Move(Point pMax)
@@ -38,13 +39,13 @@ namespace Figures
 
         public abstract void Draw(DrawingContext dc);
 
-        public int Left => _coords.X - _sizeX;
+        public int Left => (int)_coords.X - _sizeX;
 
-        public int Right => _coords.X + _sizeX;
+        public int Right => (int)_coords.X + _sizeX;
 
-        public int Top => _coords.Y - _sizeY;
+        public int Top => (int)_coords.Y - _sizeY;
 
-        public int Bottom => _coords.Y + _sizeY;
+        public int Bottom => (int)_coords.Y + _sizeY;
     }
 
 }
