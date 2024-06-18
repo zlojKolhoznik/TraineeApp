@@ -21,16 +21,26 @@ namespace Figures
             _color = color;
         }
 
+        public Color Color => _color;
+
         public void Move(Point pMax)
         {
-            if (Left < 0 || Right > pMax.X)
+            if (Left < 0)
             {
-                _speedVector.X = -_speedVector.X;
+                _speedVector.X = Math.Abs(_speedVector.X);
+            }
+            else if (Right > pMax.X)
+            {
+                _speedVector.X = -Math.Abs(_speedVector.X);
             }
 
-            if (Top < 0 || Bottom > pMax.Y)
+            if (Top < 0)
             {
-                _speedVector.Y = -_speedVector.Y;
+                _speedVector.Y = Math.Abs(_speedVector.Y);
+            }
+            else if (Bottom > pMax.Y)
+            {
+                _speedVector.Y = -Math.Abs(_speedVector.Y);
             }
 
             _coords.X += _speedVector.X;

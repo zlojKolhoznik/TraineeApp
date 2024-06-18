@@ -33,13 +33,19 @@
             <Button Click="Restart_Click" Style="{StaticResource controlButtonStyle}">
                 <Image Source="Images/refresh.png" Width="30"/>
             </Button>
+            <Button Click="Delete_Click" Style="{StaticResource controlButtonStyle}"
+                    IsEnabled="False" x:Name="btnDelete">
+                <Image Source="Images/delete.png" Width="30"/>
+            </Button>
         </ToolBarPanel>
         <Canvas Grid.Column="1" 
                 Grid.Row="1" 
                 Name="cnMain"
-                Loaded="cnMain_Loaded"/>
+                Loaded="CnMain_Loaded"/>
         <TreeView Grid.Column="0" 
                   Grid.Row="1" 
-                  Name="tvMain"/>
+                  Name="tvMain"
+                  SelectedItemChanged="TvMain_SelectedItemChanged"
+                  Margin="5"/>
     </Grid>
 </Window>
