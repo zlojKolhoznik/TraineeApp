@@ -1,0 +1,34 @@
+﻿<Window x:Class="TraineeApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TraineeApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <ToolBarPanel Grid.Column="0" 
+                      Grid.Row="0" 
+                      Grid.ColumnSpan="2" 
+                      Orientation="Horizontal"
+                      HorizontalAlignment="Center">
+            <Button Content="Triangle" Click="Triangle_Click"/>
+            <Button Content="Circle" Click="Circle_Click"/>
+            <Button Content="Rectangle" Click="Rectangle_Click"/>
+        </ToolBarPanel>
+        <Canvas Grid.Column="1" 
+                Grid.Row="1" 
+                Name="cnMain"/>
+        <TreeView Grid.Column="0" 
+                  Grid.Row="1" 
+                  Name="tvMain"/>
+    </Grid>
+</Window>
