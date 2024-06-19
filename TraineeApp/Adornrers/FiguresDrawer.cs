@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using Figures;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+
+using Figure = Figures.Figure;
 
 namespace TraineeApp.Adornrers
 {
@@ -20,6 +23,6 @@ namespace TraineeApp.Adornrers
             }
         }
 
-        public List<Figures.Figure> Figures { get; set; } = [];
+        public List<Figure> Figures { get; set; } = [];
     }
 }

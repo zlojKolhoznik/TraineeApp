@@ -14,10 +14,17 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <Menu Height="25" VerticalAlignment="Center" Grid.ColumnSpan="2">
+            <MenuItem Header="{DynamicResource File}">
+                <MenuItem Header="{DynamicResource Save}" Click="Save_Click"/>
+                <MenuItem Header="{DynamicResource Open}" Click="Open_Click"/>
+            </MenuItem>
+        </Menu>
         <ToolBarPanel Grid.Column="0" 
-                      Grid.Row="0" 
+                      Grid.Row="1" 
                       Grid.ColumnSpan="2" 
                       Orientation="Horizontal"
                       HorizontalAlignment="Center">
@@ -42,11 +49,11 @@
                 Style="{StaticResource ComboBoxStyle}"/>
         </ToolBarPanel>
         <Canvas Grid.Column="1" 
-                Grid.Row="1" 
+                Grid.Row="2" 
                 Name="cnMain"
                 Loaded="CnMain_Loaded"/>
         <TreeView Grid.Column="0" 
-                  Grid.Row="1" 
+                  Grid.Row="2" 
                   Name="tvMain"
                   SelectedItemChanged="TvMain_SelectedItemChanged"
                   Margin="5"/>

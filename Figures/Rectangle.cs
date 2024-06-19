@@ -1,21 +1,34 @@
-﻿using System.Windows;
+﻿using System.Runtime.Serialization;
+using System.Windows;
 using System.Windows.Media;
+using System.Xml;
 
-namespace Figures
+namespace Figures;
+
+[Serializable]
+public class Rectangle : Figure
 {
-    public class Rectangle : Figure
+    public Rectangle(Point pMax, int width, int height, Color color) : base(pMax, width, height, color)
     {
-        public Rectangle(Point pMax, int width, int height, Color color) : base(pMax, width, height, color)
-        {
-        }
+    }
 
-        public override void Draw(DrawingContext dc)
-        {
-            var pivot = new Point(_coords.X - _sizeX, _coords.Y - _sizeY);
-            var brush = new SolidColorBrush(_color);
-            var pen = new Pen(brush, 1);
-            var rectangle = new Rect(pivot, new Size(_sizeX * 2, _sizeY * 2));
-            dc.DrawRectangle(brush, pen, rectangle);
-        }
+    protected Rectangle(SerializationInfo info, StreamingContext context) : base(info, context)
+    {
+    }
+
+    public Rectangle() : base()
+    {
+        
+    }
+
+    public override FigureType FigureType => FigureType.Rectangle;
+
+    public override void Draw(DrawingContext dc)
+    {
+        var pivot = new Point(Coordinates.X - SizeX, Coordinates.Y - SizeY);
+        var brush = new SolidColorBrush(Color);
+        var pen = new Pen(brush, 1);
+        var rectangle = new Rect(pivot, new Size(SizeX * 2, SizeY * 2));
+        dc.DrawRectangle(brush, pen, rectangle);
     }
 }
