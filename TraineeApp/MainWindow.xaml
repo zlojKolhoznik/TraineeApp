@@ -37,6 +37,10 @@
                     IsEnabled="False" x:Name="btnDelete">
                 <Image Source="Images/delete.png" Width="30"/>
             </Button>
+            <ComboBox SelectedIndex="0" 
+                SelectionChanged="Language_SelectionChanged"
+                x:Name="cbLanguages"
+                Style="{StaticResource ComboBoxStyle}"/>
         </ToolBarPanel>
         <Canvas Grid.Column="1" 
                 Grid.Row="1" 
