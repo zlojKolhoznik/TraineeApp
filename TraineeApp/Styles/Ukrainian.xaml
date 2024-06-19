@@ -6,4 +6,6 @@
     <sys:String x:Key="Rectangle">Прямокутник</sys:String>
     <sys:String x:Key="English">Англійська</sys:String>
     <sys:String x:Key="Ukrainian">Українська</sys:String>
+    <sys:String x:Key="Stop">Стоп</sys:String>
+    <sys:String x:Key="Move">Рухатися</sys:String>
 </ResourceDictionary>

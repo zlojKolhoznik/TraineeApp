@@ -33,10 +33,9 @@
             <Button Click="Restart_Click" Style="{StaticResource controlButtonStyle}">
                 <Image Source="Images/refresh.png" Width="30"/>
             </Button>
-            <Button Click="Delete_Click" Style="{StaticResource controlButtonStyle}"
-                    IsEnabled="False" x:Name="btnDelete">
-                <Image Source="Images/delete.png" Width="30"/>
-            </Button>
+            <Button Click="ToggleMoving_Click" Style="{StaticResource controlButtonStyle}"
+                    IsEnabled="False" x:Name="btnToggleMoving"
+                    Content="{DynamicResource Stop}"/>
             <ComboBox SelectedIndex="0" 
                 SelectionChanged="Language_SelectionChanged"
                 x:Name="cbLanguages"

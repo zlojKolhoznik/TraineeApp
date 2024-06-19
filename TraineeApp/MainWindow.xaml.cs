@@ -70,8 +70,8 @@ public partial class MainWindow : Window
         {
             return;
         }
-        var adornedLayer = AdornerLayer.GetAdornerLayer(canvas);
-        adornedLayer.Add(_figuresDrawer);
+        var adornerLayer = AdornerLayer.GetAdornerLayer(canvas);
+        adornerLayer.Add(_figuresDrawer);
     }
 
     private void Triangle_Click(object sender, RoutedEventArgs e)
@@ -97,26 +97,33 @@ public partial class MainWindow : Window
 
     private void TvMain_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
-        if (e.NewValue is TreeViewItem node && node.Tag is Figure)
+        if (e.NewValue is TreeViewItem node && node.Tag is Figure figure)
         {
             _selectedNode = node;
-            btnDelete.IsEnabled = true;
+            btnToggleMoving.IsEnabled = true;
+            btnToggleMoving.SetResourceReference(ContentProperty, figure.IsMoving ? "Stop" : "Move");
         }
         else
         {
-            btnDelete.IsEnabled = false;
+            btnToggleMoving.IsEnabled = false;
+            btnToggleMoving.SetResourceReference(ContentProperty, "Stop");
         }
     }
 
-    private void Delete_Click(object sender, RoutedEventArgs e)
+    private void ToggleMoving_Click(object sender, RoutedEventArgs e)
     {
         if (_selectedNode is not TreeViewItem node || node.Tag is not Figure figure)
         {
             return;
         }
 
-        _figures.Remove(figure);
-        tvMain.Items.Remove(node);
+        figure.IsMoving = !figure.IsMoving;
+        if (sender is not Button btn)
+        {
+            return;
+        }
+
+        btn.SetResourceReference(ContentProperty, figure.IsMoving ? "Stop" : "Move");
     }
 
     private void Language_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -126,7 +133,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        _currentLanguage = (comboBox.SelectedItem as ComboBoxItem).Tag.ToString();
+        _currentLanguage = (comboBox.SelectedItem as ComboBoxItem)!.Tag.ToString()!;
         var app = Application.Current;
         var resources = app?.Resources;
         if (resources is null)

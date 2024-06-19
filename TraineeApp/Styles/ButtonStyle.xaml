@@ -36,9 +36,6 @@
                             <ColorAnimation Duration="0:0:0.2"
                                             Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
                                             To="#dddddd"/>
-                            <ColorAnimation Duration="0:0:0.2"
-                                            Storyboard.TargetProperty="(Button.Foreground).(SolidColorBrush.Color)"
-                                            To="#eaeaea"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.EnterActions>
@@ -48,9 +45,6 @@
                             <ColorAnimation Duration="0:0:0.2"
                                             Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
                                             To="#eaeaea"/>
-                            <ColorAnimation Duration="0:0:0.2"
-                                            Storyboard.TargetProperty="(Button.Foreground).(SolidColorBrush.Color)"
-                                            To="#353535"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </Trigger.ExitActions>

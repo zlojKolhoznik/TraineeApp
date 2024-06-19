@@ -23,8 +23,15 @@ namespace Figures
 
         public Color Color => _color;
 
+        public bool IsMoving { get; set; } = true;
+
         public void Move(Point pMax)
         {
+            if (!IsMoving)
+            {
+                return;
+            }
+
             if (Left < 0)
             {
                 _speedVector.X = Math.Abs(_speedVector.X);
