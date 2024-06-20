@@ -64,6 +64,11 @@ public abstract class Figure : ISerializable
 
     public int Bottom => (int)Coordinates.Y + SizeY;
 
+    public static Figure Create<T>(Point pMax, Color color, int width, int height) where T : Figure
+    {
+        return (T?)Activator.CreateInstance(typeof(T), pMax, width, height, color) ?? throw new InvalidOperationException("Failed to create figure");
+    }
+
     public void Move(Point pMax)
     {
         if (!IsMoving)

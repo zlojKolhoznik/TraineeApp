@@ -27,4 +27,6 @@ public class Randomizer
 
         return result;
     }
+
+    public int NextInt(int min, int max) => _random.Next(min, max);
 }

@@ -1,19 +1,14 @@
 ﻿using Figures;
 using Microsoft.Win32;
 using MyRandomizer;
-using System.IO;
 using System.Media;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
-using System.Xml.Serialization;
 using TraineeApp.Adornrers;
-
+using TraineeApp.IO;
 using Figure = Figures.Figure;
 
 namespace TraineeApp;
@@ -84,26 +79,39 @@ public partial class MainWindow : Window
 
     private void Triangle_Click(object sender, RoutedEventArgs e)
     {
-        CreateFigure(typeof(Triangle));
+        var figure = CreateFigure<Triangle>();
+        _figures.Add(figure);
+        TreeViewItem node = CreateNodeFromFigure(figure);
+        tvMain.Items.Add(node);
     }
 
-    private void Circle_Click(object sender, RoutedEventArgs e) 
+    private void Circle_Click(object sender, RoutedEventArgs e)
     {
-        CreateFigure(typeof(Circle));
+        var figure = CreateFigure<Circle>();
+        _figures.Add(figure);
+        TreeViewItem node = CreateNodeFromFigure(figure);
+        tvMain.Items.Add(node);
     }
 
-    private void Rectangle_Click(object sender, RoutedEventArgs e) 
+    private void Rectangle_Click(object sender, RoutedEventArgs e)
     {
-        CreateFigure(typeof(Rectangle));
+        var figure = CreateFigure<Rectangle>();
+        _figures.Add(figure);
+        TreeViewItem node = CreateNodeFromFigure(figure);
+        tvMain.Items.Add(node);
     }
 
     private void Restart_Click(object sender, RoutedEventArgs e)
+    {
+        ClearField();
+    }
+
+    private void ClearField()
     {
         _figures.Clear();
         tvMain.Items.Clear();
     }
 
-    
     private void Save_Click(object sender, RoutedEventArgs e)
     {
         var sfd = new SaveFileDialog
@@ -116,13 +124,13 @@ public partial class MainWindow : Window
             switch (sfd.FilterIndex)
             {
                 case 1:
-                    SaveBinary(sfd.FileName);
+                    FigureSerializer.SaveToBinary(sfd.FileName, _figures);
                     break;
                 case 2:
-                    SaveJson(sfd.FileName);
+                    FigureSerializer.SaveToJson(sfd.FileName, _figures);
                     break;
                 case 3:
-                    SaveXml(sfd.FileName);
+                    FigureSerializer.SaveToXml(sfd.FileName, _figures);
                     break;
             }
         }
@@ -137,16 +145,32 @@ public partial class MainWindow : Window
         };
         if (ofd.ShowDialog() == true)
         {
+            ClearField();
             switch (ofd.FilterIndex)
             {
                 case 1:
-                    OpenBinary(ofd.FileName);
+                    _figures.AddRange(FigureSerializer.ReadFromBinary(ofd.FileName));
+                    foreach (var figure in _figures)
+                    {
+                        TreeViewItem node = CreateNodeFromFigure(figure);
+                        tvMain.Items.Add(node);
+                    }
                     break;
                 case 2:
-                    OpenJson(ofd.FileName);
+                    _figures.AddRange(FigureSerializer.ReadFromJson(ofd.FileName));
+                    foreach (var figure in _figures)
+                    {
+                        TreeViewItem node = CreateNodeFromFigure(figure);
+                        tvMain.Items.Add(node);
+                    }
                     break;
                 case 3:
-                    OpenXml(ofd.FileName);
+                    _figures.AddRange(FigureSerializer.ReadFromXml(ofd.FileName));
+                    foreach (var figure in _figures)
+                    {
+                        TreeViewItem node = CreateNodeFromFigure(figure);
+                        tvMain.Items.Add(node);
+                    }
                     break;
             }
         }
@@ -157,16 +181,12 @@ public partial class MainWindow : Window
         if (e.NewValue is TreeViewItem node && node.Tag is Figure figure)
         {
             _selectedNode = node;
-            btnToggleMoving.IsEnabled = true;
-            btnRemoveBeep.IsEnabled = true;
-            btnAddBeep.IsEnabled = true;
+            (btnToggleMoving.IsEnabled, btnRemoveBeep.IsEnabled, btnAddBeep.IsEnabled) = (true, true, true);
             btnToggleMoving.SetResourceReference(ContentProperty, figure.IsMoving ? "Stop" : "Move");
         }
         else
         {
-            btnToggleMoving.IsEnabled = false;
-            btnRemoveBeep.IsEnabled = false;
-            btnAddBeep.IsEnabled = false;
+            (btnToggleMoving.IsEnabled, btnRemoveBeep.IsEnabled, btnAddBeep.IsEnabled) = (false, false, false);
             btnToggleMoving.SetResourceReference(ContentProperty, "Stop");
         }
     }
@@ -226,23 +246,14 @@ public partial class MainWindow : Window
         figure.Collided -= Figure_Collided;
     }
 
-    private void CreateFigure(Type type)
+    private Figure CreateFigure<T>() where T : Figure
     {
-        if (!type.IsAssignableTo(typeof(Figure)))
-        {
-            throw new ArgumentException("Type must be a subclass of Figure");
-        }
-
         var pMax = new Point(cnMain.RenderSize.Width, cnMain.RenderSize.Height);
         var randomizer = new Randomizer();
         var color = randomizer.NextColor();
-        if (Activator.CreateInstance(type, pMax, 50, 50, color) is not Figure figure)
-        {
-            throw new InvalidOperationException("Failed to create figure");
-        }
-
-        _figures.Add(figure);
-        CreateNodeFromFigure(figure);
+        var width = randomizer.NextInt(10, 50);
+        var height = randomizer.NextInt(10, 50);
+        return Figure.Create<T>(pMax, color, width, height);
     }
 
     private void Figure_Collided(object? sender, CollidedEventArgs e)
@@ -251,7 +262,7 @@ public partial class MainWindow : Window
         lblLastCollisionCoords.Content = $"x={e.Coordinates.X}, y={e.Coordinates.Y}";
     }
 
-    private void CreateNodeFromFigure(Figure figure)
+    private TreeViewItem CreateNodeFromFigure(Figure figure)
     {
         var node = new TreeViewItem
         {
@@ -261,83 +272,7 @@ public partial class MainWindow : Window
         };
         node.SetResourceReference(TreeViewItem.HeaderProperty, figure.GetType().Name);
         node.SetResourceReference(StyleProperty, "TreeViewItemStyle");
-        tvMain.Items.Add(node);
-    }
-
-#pragma warning disable SYSLIB0011 // Type or member is obsolete
-
-    private void SaveBinary(string path)
-    {
-        using var fs = new FileStream(path, FileMode.Create);
-        var formatter = new BinaryFormatter();
-        formatter.Serialize(fs, _figures);
-    }
-
-#pragma warning restore SYSLIB0011 // Type or member is obsolete
-
-
-    private void SaveJson(string path)
-    {
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Converters = { new JsonStringEnumConverter() }
-        };
-        var json = JsonSerializer.Serialize(_figures, options);
-        File.WriteAllText(path, json);
-    }
-
-    private void SaveXml(string path)
-    {
-        var serializer = new XmlSerializer(typeof(List<Figure>));
-        using var fs = new FileStream(path, FileMode.Create);
-        serializer.Serialize(fs, _figures);
-    }
-
-#pragma warning disable SYSLIB0011 // Type or member is obsolete
-
-    private void OpenBinary(string path)
-    {
-        using var fs = new FileStream(path, FileMode.Open);
-        var formatter = new BinaryFormatter();
-        _figures.Clear();
-        _figures.AddRange((List<Figure>)formatter.Deserialize(fs));
-        tvMain.Items.Clear();
-        foreach (var figure in _figures)
-        {
-            CreateNodeFromFigure(figure);
-        }
-    }
-
-#pragma warning restore SYSLIB0011 // Type or member is obsolete
-
-    private void OpenJson(string path)
-    {
-        var json = File.ReadAllText(path);
-        var options = new JsonSerializerOptions
-        {
-            Converters = { new JsonStringEnumConverter() }
-        };
-        _figures.Clear();
-        _figures.AddRange(JsonSerializer.Deserialize<List<Figure>>(json, options));
-        tvMain.Items.Clear();
-        foreach (var figure in _figures)
-        {
-            CreateNodeFromFigure(figure);
-        }
-    }
-
-    private void OpenXml(string path)
-    {
-        var serializer = new XmlSerializer(typeof(List<Figure>));
-        using var fs = new FileStream(path, FileMode.Open);
-        _figures.Clear();
-        _figures.AddRange((List<Figure>)serializer.Deserialize(fs));
-        tvMain.Items.Clear();
-        foreach (var figure in _figures)
-        {
-            CreateNodeFromFigure(figure);
-        }
+        return node;
     }
 
 }
