@@ -11,4 +11,5 @@
     <sys:String x:Key="File">_Файл</sys:String>
     <sys:String x:Key="Save">_Зберегти</sys:String>
     <sys:String x:Key="Open">_Відкрити</sys:String>
+    <sys:String x:Key="LastCollision">Координати останнього зіткнення однакових фігур:</sys:String>
 </ResourceDictionary>

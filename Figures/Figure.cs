@@ -1,10 +1,9 @@
 using Figures.Converters;
+using MyRandomizer;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Media;
-using System.Xml;
-using System.Xml.Schema;
 using System.Xml.Serialization;
 
 namespace Figures;
@@ -16,13 +15,15 @@ namespace Figures;
     JsonConverter(typeof(FigureJsonConverter))]
 public abstract class Figure : ISerializable
 {
+    public event EventHandler<CollidedEventArgs>? Collided;
+
     public Figure(Point pMax, int width, int height, Color color)
     {
-        var rnd = new Random();
+        var rnd = new Randomizer();
         SizeX = width / 2;
         SizeY = height / 2;
-        Coordinates = new Point(rnd.Next(SizeX, (int)pMax.X - SizeX), rnd.Next(SizeY, (int)pMax.Y - SizeY));
-        SpeedVector = new Point(rnd.Next(5, 10), rnd.Next(5, 10));
+        Coordinates = rnd.NextPoint(pMax);
+        SpeedVector = rnd.NextVector(5, 9);
         Color = color;
     }
 
@@ -40,15 +41,28 @@ public abstract class Figure : ISerializable
         IsMoving = info.GetBoolean("IsMoving");
         Color = (Color)ColorConverter.ConvertFromString(info.GetString("Color"));
     }
+
     public abstract FigureType FigureType { get; }
 
     public int SizeX { get; set; }              // half-width
+
     public int SizeY { get; set; }              // half-height
+
     public Point Coordinates { get; set; }
+
     public Point SpeedVector { get; set; }
+
     public Color Color { get; set; }
 
     public bool IsMoving { get; set; } = true;
+
+    public int Left => (int)Coordinates.X - SizeX;
+
+    public int Right => (int)Coordinates.X + SizeX;
+
+    public int Top => (int)Coordinates.Y - SizeY;
+
+    public int Bottom => (int)Coordinates.Y + SizeY;
 
     public void Move(Point pMax)
     {
@@ -88,16 +102,25 @@ public abstract class Figure : ISerializable
         info.AddValue("IsMoving", IsMoving);
     }
 
+    public void CollisionCheck(IEnumerable<Figure> others)
+    {
+        Figure? collision = others.Except([this]).Where(f => f.GetType() == GetType())
+            .FirstOrDefault(f => Left < f.Right && Right > f.Left && Top < f.Bottom && Bottom > f.Top);
+        if (collision is not null)
+        {
+            int x = (int)(Coordinates.X + collision.Coordinates.X) / 2;
+            int y = (int)(Coordinates.Y + collision.Coordinates.Y) / 2;
+            OnCollided(new CollidedEventArgs(x, y));
+        }
+    }
+
+    protected virtual void OnCollided(CollidedEventArgs e)
+    {
+        var temp = Volatile.Read(ref Collided);
+        temp?.Invoke(this, e);
+    }
+
     public abstract void Draw(DrawingContext dc);
-
-
-    public int Left => (int)Coordinates.X - SizeX;
-
-    public int Right => (int)Coordinates.X + SizeX;
-
-    public int Top => (int)Coordinates.Y - SizeY;
-
-    public int Bottom => (int)Coordinates.Y + SizeY;
 }
 
 public enum FigureType

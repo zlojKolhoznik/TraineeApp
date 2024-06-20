@@ -1,6 +1,8 @@
 ﻿using Figures;
 using Microsoft.Win32;
+using MyRandomizer;
 using System.IO;
+using System.Media;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -156,11 +158,15 @@ public partial class MainWindow : Window
         {
             _selectedNode = node;
             btnToggleMoving.IsEnabled = true;
+            btnRemoveBeep.IsEnabled = true;
+            btnAddBeep.IsEnabled = true;
             btnToggleMoving.SetResourceReference(ContentProperty, figure.IsMoving ? "Stop" : "Move");
         }
         else
         {
             btnToggleMoving.IsEnabled = false;
+            btnRemoveBeep.IsEnabled = false;
+            btnAddBeep.IsEnabled = false;
             btnToggleMoving.SetResourceReference(ContentProperty, "Stop");
         }
     }
@@ -200,6 +206,26 @@ public partial class MainWindow : Window
         language.Source = new Uri($"Styles/{_currentLanguage}.xaml", UriKind.Relative);
     }
 
+    private void AddBeep_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedNode is not TreeViewItem node || node.Tag is not Figure figure)
+        {
+            return;
+        }
+
+        figure.Collided += Figure_Collided;
+    }
+
+    private void RemoveBeep_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedNode is not TreeViewItem node || node.Tag is not Figure figure)
+        {
+            return;
+        }
+
+        figure.Collided -= Figure_Collided;
+    }
+
     private void CreateFigure(Type type)
     {
         if (!type.IsAssignableTo(typeof(Figure)))
@@ -208,7 +234,8 @@ public partial class MainWindow : Window
         }
 
         var pMax = new Point(cnMain.RenderSize.Width, cnMain.RenderSize.Height);
-        var color = GetRandomColor();
+        var randomizer = new Randomizer();
+        var color = randomizer.NextColor();
         if (Activator.CreateInstance(type, pMax, 50, 50, color) is not Figure figure)
         {
             throw new InvalidOperationException("Failed to create figure");
@@ -216,6 +243,12 @@ public partial class MainWindow : Window
 
         _figures.Add(figure);
         CreateNodeFromFigure(figure);
+    }
+
+    private void Figure_Collided(object? sender, CollidedEventArgs e)
+    {
+        SystemSounds.Beep.Play();
+        lblLastCollisionCoords.Content = $"x={e.Coordinates.X}, y={e.Coordinates.Y}";
     }
 
     private void CreateNodeFromFigure(Figure figure)
@@ -229,14 +262,6 @@ public partial class MainWindow : Window
         node.SetResourceReference(TreeViewItem.HeaderProperty, figure.GetType().Name);
         node.SetResourceReference(StyleProperty, "TreeViewItemStyle");
         tvMain.Items.Add(node);
-    }
-
-    private static Color GetRandomColor()
-    {
-        var rnd = new Random();
-        var rgb = new byte[3];
-        rnd.NextBytes(rgb);
-        return Color.FromRgb(rgb[0], rgb[1], rgb[2]);
     }
 
 #pragma warning disable SYSLIB0011 // Type or member is obsolete

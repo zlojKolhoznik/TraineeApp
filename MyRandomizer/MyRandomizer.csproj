@@ -5,12 +5,9 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>bin\Release\net8.0-windows\snKeys.snk</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>1.0</AssemblyVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Reference Include="MyRandomizer">
-      <HintPath>..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_MSIL\MyRandomizer\v4.0_1.0.0.0__4b0e8e416be7d1a6\MyRandomizer.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
 </Project>

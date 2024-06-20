@@ -20,6 +20,7 @@ namespace TraineeApp.Adornrers
             {
                 figure.Draw(drawingContext);
                 figure.Move(pMax);
+                figure.CollisionCheck(Figures);
             }
         }
 

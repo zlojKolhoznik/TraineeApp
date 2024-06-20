@@ -16,6 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Menu Height="25" VerticalAlignment="Center" Grid.ColumnSpan="2">
             <MenuItem Header="{DynamicResource File}">
@@ -43,6 +44,12 @@
             <Button Click="ToggleMoving_Click" Style="{StaticResource controlButtonStyle}"
                     IsEnabled="False" x:Name="btnToggleMoving"
                     Content="{DynamicResource Stop}"/>
+            <Button Click="AddBeep_Click" Style="{StaticResource controlButtonStyle}"
+                    IsEnabled="False" x:Name="btnAddBeep"
+                    Content="+"/>
+            <Button Click="RemoveBeep_Click" Style="{StaticResource controlButtonStyle}"
+                    IsEnabled="False" x:Name="btnRemoveBeep"
+                    Content="-"/>
             <ComboBox SelectedIndex="0" 
                 SelectionChanged="Language_SelectionChanged"
                 x:Name="cbLanguages"
@@ -57,5 +64,15 @@
                   Name="tvMain"
                   SelectedItemChanged="TvMain_SelectedItemChanged"
                   Margin="5"/>
+        <StatusBar Grid.Column="0" 
+                   Grid.Row="3" 
+                   Grid.ColumnSpan="2">
+            <StatusBarItem>
+                <Label Content="{DynamicResource LastCollision}"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Label x:Name="lblLastCollisionCoords"/>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

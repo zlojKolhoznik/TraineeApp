@@ -11,4 +11,5 @@
     <sys:String x:Key="File">_File</sys:String>
     <sys:String x:Key="Save">_Save</sys:String>
     <sys:String x:Key="Open">_Open</sys:String>
+    <sys:String x:Key="LastCollision">Last collision of same figures coordinates: </sys:String>
 </ResourceDictionary>
