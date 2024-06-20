@@ -1,4 +1,5 @@
 ﻿using Figures;
+using System.IO;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -9,6 +10,8 @@ namespace TraineeApp.Adornrers
 {
     internal class FiguresDrawer : Adorner
     {
+        private const string LogPath = "log.txt";
+
         public FiguresDrawer(UIElement adornedElement) : base(adornedElement)
         {
         }
@@ -19,7 +22,16 @@ namespace TraineeApp.Adornrers
             foreach (var figure in Figures)
             {
                 figure.Draw(drawingContext);
-                figure.Move(pMax);
+                try
+                {
+                    figure.Move(pMax);
+                }
+                catch (FigureOutOfBoundsException e)
+                {
+                    using var file = new StreamWriter(LogPath, true);
+                    file.WriteLine(e);
+                    figure.ReturnToBounds(pMax);
+                }
                 figure.CollisionCheck(Figures);
             }
         }

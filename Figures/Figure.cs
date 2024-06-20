@@ -90,6 +90,40 @@ public abstract class Figure : ISerializable
         }
 
         Coordinates = new Point(Coordinates.X + SpeedVector.X, Coordinates.Y + SpeedVector.Y);
+        if (Coordinates.X > pMax.X || Coordinates.X < 0)
+        {
+            throw new FigureOutOfBoundsException("X out of bounds", (int)Coordinates.X, (int)Coordinates.Y);
+        }
+
+        if (Coordinates.Y > pMax.Y || Coordinates.Y < 0)
+        {
+            throw new FigureOutOfBoundsException("Y out of bounds", (int)Coordinates.X, (int)Coordinates.Y);
+        }
+    }
+
+    public void ReturnToBounds(Point pMax)
+    {
+        if (Left < 0)
+        {
+            Coordinates = new Point(SizeX, Coordinates.Y);
+            SpeedVector = SpeedVector with { X = Math.Abs(SpeedVector.X) };
+        }
+        else if (Right > pMax.X)
+        {
+            Coordinates = new Point(pMax.X - SizeX, Coordinates.Y);
+            SpeedVector = SpeedVector with { X = -Math.Abs(SpeedVector.X) };
+        }
+
+        if (Top < 0)
+        {
+            Coordinates = new Point(Coordinates.X, SizeY);
+            SpeedVector = SpeedVector with { Y = Math.Abs(SpeedVector.Y) };
+        }
+        else if (Bottom > pMax.Y)
+        {
+            Coordinates = new Point(Coordinates.X, pMax.Y - SizeY);
+            SpeedVector = SpeedVector with { Y = -Math.Abs(SpeedVector.Y) };
+        }
     }
 
     public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
